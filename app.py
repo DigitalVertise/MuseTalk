@@ -1,3 +1,20 @@
+# --- Vercel serverless compatibility shim ---
+# This app is a Gradio application designed to run as a persistent GPU server
+# (via demo.queue().launch()), which is NOT compatible with Vercel's serverless
+# Python runtime (no GPU, no long-running process, execution time limits).
+# This handler exists only to satisfy Vercel's build-time check for a top-level
+# app/application/handler export. Invoking it will NOT run MuseTalk inference.
+def handler(request):
+      return {
+                "statusCode": 501,
+                "body": "MuseTalk requires GPU compute and a persistent server process; "
+                        "it cannot run as a Vercel serverless function. Deploy this app "
+                        "on a GPU-backed host instead (e.g. Hugging Face Spaces, RunPod, Modal)."
+      }
+  
+app = handler
+# --- end shim ---
+
 import os
 import time
 import pdb
